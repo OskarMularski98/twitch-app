@@ -4,7 +4,7 @@
       <v-row>
         <v-col cols="12">
           <v-progress-circular
-            color="primary"
+            color="purple lighten-1"
             indeterminate
           ></v-progress-circular>
         </v-col>
@@ -34,6 +34,9 @@
                     v-model="search"
                   ></v-text-field>
                 </template>
+                <template #[`item.number`]="{ item }">
+                  {{ item.number }}
+                </template>
                 <template #[`item.profile`]="{ item }">
                   <v-img
                     :src="item.profile_image_url"
@@ -60,6 +63,7 @@
                 <template #[`item.language`]="{ item }">
                   <v-btn fab text small class="mr-4">
                     <lang-flag
+                      class="flag-scale"
                       :squared="false"
                       :iso="item.language"
                     ></lang-flag>
@@ -91,6 +95,10 @@ export default {
       streamsDetails: [],
       streamerProfile: [],
       headers: [
+        {
+          text: "#",
+          value: "number",
+        },
         {
           text: "Profile",
           value: "profile",
@@ -166,12 +174,13 @@ export default {
         );
         this.streamsDetails = response.data.data;
         this.streams.forEach((stream) => {
-          this.streamsDetails.forEach((details) => {
+          this.streamsDetails.forEach((details, index) => {
             if (stream.user_id === details.id) {
               details.user_name = stream.user_name;
               details.game_name = stream.game_name;
               details.viewer_count = stream.viewer_count;
               details.language = stream.language;
+              details.number = index + 1;
             }
           });
         });
@@ -199,4 +208,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.flag-scale {
+  transform: scale(1.5);
+}
+</style>
