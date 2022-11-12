@@ -1,5 +1,5 @@
 <template>
-  <v-card>asdasd</v-card>
+  <v-data-table></v-data-table>
 </template>
 
 <script>

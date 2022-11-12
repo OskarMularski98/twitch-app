@@ -12,12 +12,7 @@
     </v-container>
     <v-fade-transition hide-on-leave>
       <div v-if="!isLoading">
-        <v-toolbar dark color="purple darken-2">
-          <v-spacer></v-spacer>
-          <v-toolbar-title>Rank 100 Live Streamers</v-toolbar-title>
-          <v-spacer></v-spacer>
-        </v-toolbar>
-        <v-container class="fill-height container-class">
+        <v-container>
           <v-row justify="center" align="center">
             <div>
               <v-data-table
@@ -28,11 +23,14 @@
                 :search="search"
               >
                 <template #top>
-                  <v-text-field
-                    class="pa-4"
-                    label="Search"
-                    v-model="search"
-                  ></v-text-field>
+                  <v-col cols="12" class="pa-0">
+                    <v-text-field
+                      class="pa-4"
+                      label="Search"
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                    ></v-text-field>
+                  </v-col>
                 </template>
                 <template #[`item.number`]="{ item }">
                   {{ item.number }}
@@ -40,6 +38,7 @@
                 <template #[`item.profile`]="{ item }">
                   <v-img
                     :src="item.profile_image_url"
+                    lazy-src="../assets/twitch-logo-lazy-src.png"
                     max-height="50"
                     max-width="50"
                   >
@@ -69,8 +68,8 @@
                     ></lang-flag>
                   </v-btn>
                 </template>
-                <template #[`item.details`]>
-                  <v-btn fab text small @click="details"
+                <template #[`item.details`]="{ item }">
+                  <v-btn fab text small @click="details(item.id)"
                     ><v-icon>{{ "mdi-account-details" }}</v-icon></v-btn
                   >
                 </template>
@@ -201,8 +200,8 @@ export default {
       else if (viewers > 5000) return "orange";
       else if (viewers < 5000) return "yellow";
     },
-    details() {
-      this.$router.push({ name: "about" });
+    details(value) {
+      this.$router.push({ name: "about", params: { id: value } });
     },
   },
 };
