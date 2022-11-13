@@ -12,86 +12,94 @@
     </v-container>
     <v-fade-transition hide-on-leave>
       <v-container v-if="!isLoading" class="fill-height justify-center">
-        <v-data-table
-          hide-default-footer
-          :headers="headers"
-          :items="items"
-          dark
-        >
-          <template #top>
-            <v-toolbar>
-              <v-spacer></v-spacer>
-              <v-toolbar-title> Thumbnail From Stream 📸 </v-toolbar-title>
-              <v-spacer></v-spacer>
-            </v-toolbar>
-            <v-img
-              lazy-src="../assets/twitch-logo-lazy-src.png"
-              aspect-ratio="1"
-              contain
-              max-height="500"
-              max-width="500"
-              :src="thumbnail_url"
+        <v-row class="justify-center">
+          <v-col cols="12" xl="3" lg="5" md="7" sm="7">
+            <v-data-table
+              hide-default-footer
+              :headers="headers"
+              :items="items"
+              dark
             >
-              <template #placeholder>
-                <v-row class="fill-height ma-0" align="center" justify="center">
-                  <v-progress-circular
-                    indeterminate
-                    color="grey lighten-5"
-                  ></v-progress-circular>
-                </v-row>
+              <template #top>
+                <v-toolbar>
+                  <v-spacer></v-spacer>
+                  <v-toolbar-title> Thumbnail From Stream 📸 </v-toolbar-title>
+                  <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-img
+                  lazy-src="../assets/twitch-logo-lazy-src.png"
+                  aspect-ratio="1"
+                  contain
+                  max-height="500"
+                  max-width="500"
+                  :src="thumbnail_url"
+                >
+                  <template #placeholder>
+                    <v-row
+                      class="fill-height ma-0"
+                      align="center"
+                      justify="center"
+                    >
+                      <v-progress-circular
+                        indeterminate
+                        color="grey lighten-5"
+                      ></v-progress-circular>
+                    </v-row>
+                  </template>
+                </v-img>
               </template>
-            </v-img>
-          </template>
-          <template #[`item.value`]="{ item }">
-            <div v-if="item.name === 'Language'">
-              <v-btn fab text small class="mr-4">
-                <lang-flag
-                  style="transform: scale(1.5)"
-                  class="flag-scale"
-                  :squared="false"
-                  :iso="item.value"
-                ></lang-flag>
-              </v-btn>
-            </div>
-            <div v-else>
-              {{ item.value }}
-            </div>
-          </template>
-          <template #footer>
-            <v-toolbar class="">
-              <v-spacer></v-spacer>
-              <v-toolbar-title class="justify-center"
-                >Most Popular Clips 🎬</v-toolbar-title
-              >
-              <v-spacer></v-spacer>
-            </v-toolbar>
-            <v-carousel
-              hide-delimiters
-              style="width: 500px"
-              class="carousel"
-              height="auto"
-            >
-              <v-carousel-item v-for="(item, i) in carouselItems" :key="i">
-                <iframe
-                  :src="`${item.embed_url}&parent=twitch-app-om.herokuapp.com`"
-                  allowfullscreen="true"
-                  autoplay="false"
-                  height="300"
-                  width="500"
-                ></iframe>
-              </v-carousel-item>
-            </v-carousel>
-            <v-btn
-              block
-              tile
-              target="_blank"
-              :href="link"
-              color="purple darken-3"
-            >
-              Click To Watch Stream!
-            </v-btn>
-          </template>
-        </v-data-table>
+              <template #[`item.value`]="{ item }">
+                <div v-if="item.name === 'Language'">
+                  <v-btn fab text small class="mr-4">
+                    <lang-flag
+                      style="transform: scale(1.5)"
+                      class="flag-scale"
+                      :squared="false"
+                      :iso="item.value"
+                    ></lang-flag>
+                  </v-btn>
+                </div>
+                <div v-else>
+                  {{ item.value }}
+                </div>
+              </template>
+              <template #footer>
+                <v-toolbar class="">
+                  <v-spacer></v-spacer>
+                  <v-toolbar-title class="justify-center"
+                    >Most Popular Clips 🎬</v-toolbar-title
+                  >
+                  <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-carousel
+                  hide-delimiters
+                  style="width: 500px"
+                  class="carousel"
+                  height="auto"
+                >
+                  <v-carousel-item v-for="(item, i) in carouselItems" :key="i">
+                    <iframe
+                      :src="`${item.embed_url}&parent=twitch-app-om.herokuapp.com`"
+                      allowfullscreen="true"
+                      autoplay="false"
+                      height="300"
+                      width="500"
+                    ></iframe>
+                  </v-carousel-item>
+                </v-carousel>
+                <v-btn
+                  block
+                  tile
+                  target="_blank"
+                  :href="link"
+                  color="purple darken-3"
+                >
+                  Click To Watch Stream!
+                </v-btn>
+              </template>
+            </v-data-table>
+          </v-col>
+        </v-row>
       </v-container>
     </v-fade-transition>
   </div>

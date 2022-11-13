@@ -14,7 +14,7 @@
       <div v-if="!isLoading">
         <v-container>
           <v-row justify="center" align="center">
-            <div>
+            <v-col cols="12" xl="10">
               <v-data-table
                 dark
                 class="elevation-12 grey darken-3"
@@ -74,7 +74,7 @@
                   >
                 </template>
               </v-data-table>
-            </div>
+            </v-col>
           </v-row>
         </v-container>
       </div>
