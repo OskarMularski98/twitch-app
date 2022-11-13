@@ -16,8 +16,14 @@
 
     <v-main class="purple darken-4 background">
       <v-toolbar dark color="purple darken-2">
-        <v-btn v-if="$route.name === 'about'" fab text small :to="{name: 'home'}">
-          <v-icon> {{'mdi-arrow-left'}} </v-icon>
+        <v-btn
+          v-if="buttonRoutes.includes($route.name)"
+          @click="checkRoute"
+          fab
+          text
+          small
+        >
+          <v-icon> {{ "mdi-arrow-left" }} </v-icon>
         </v-btn>
         <v-spacer></v-spacer>
         <v-toolbar-title style="text-shadow: 0px 0px 3px"
@@ -40,10 +46,17 @@ export default {
     return {
       drawer: null,
       name: "",
+      buttonRoutes: ["about"],
     };
   },
   async created() {},
-  methods: {},
+  methods: {
+    checkRoute() {
+      if (this.$route.name === "about") {
+        this.$router.push({ name: "home" });
+      }
+    },
+  },
 };
 </script>
 <style scoped>

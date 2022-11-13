@@ -19,6 +19,11 @@
           dark
         >
           <template #top>
+            <v-toolbar>
+              <v-spacer></v-spacer>
+              <v-toolbar-title> Thumbnail From Stream 📸 </v-toolbar-title>
+              <v-spacer></v-spacer>
+            </v-toolbar>
             <v-img
               lazy-src="../assets/twitch-logo-lazy-src.png"
               aspect-ratio="1"
@@ -53,6 +58,29 @@
             </div>
           </template>
           <template #footer>
+            <v-toolbar class="">
+              <v-spacer></v-spacer>
+              <v-toolbar-title class="justify-center"
+                >Most Popular Clips 🎬</v-toolbar-title
+              >
+              <v-spacer></v-spacer>
+            </v-toolbar>
+            <v-carousel
+              hide-delimiters
+              style="width: 500px"
+              class="carousel"
+              height="auto"
+            >
+              <v-carousel-item v-for="(item, i) in carouselItems" :key="i">
+                <iframe
+                  :src="`${item.embed_url}&parent=localhost`"
+                  allowfullscreen="true"
+                  autoplay="false"
+                  height="300"
+                  width="500"
+                ></iframe>
+              </v-carousel-item>
+            </v-carousel>
             <v-btn
               block
               tile
@@ -60,7 +88,7 @@
               :href="link"
               color="purple darken-3"
             >
-              Click To Watch!
+              Click To Watch Stream!
             </v-btn>
           </template>
         </v-data-table>
@@ -70,6 +98,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import axios from "axios";
 export default {
   props: ["id"],
@@ -89,14 +118,17 @@ export default {
           text: "#",
           value: "value",
           sortable: false,
+          width: 300,
         },
       ],
       items: [],
+      carouselItems: [],
     };
   },
   async created() {
     this.isLoading = true;
     await this.loadStreamer();
+    await this.loadClips();
     this.isLoading = false;
   },
   methods: {
@@ -130,8 +162,8 @@ export default {
             value: this.streamerInfo.title,
           },
           {
-            name: "Started at",
-            value: this.streamerInfo.started_at,
+            name: "Started at (CET)",
+            value: moment(this.streamerInfo.started_at).format("HH:mm"),
           },
         ];
         this.thumbnail_url = this.streamerInfo.thumbnail_url
@@ -143,8 +175,39 @@ export default {
         console.log(error);
       }
     },
+    async loadClips() {
+      try {
+        const response = await axios.get(
+          `https://api.twitch.tv/helix/clips?broadcaster_id=${this.id}`,
+          {
+            headers: {
+              Authorization: "Bearer n8y2uezpvxa0uavp73bye42mk7c43k",
+              "Client-Id": "cauml8m858lhojpgwkhkk3a4ohx071",
+            },
+          }
+        );
+        // console.log(response.data.data);
+        this.carouselItems = response.data.data;
+        // this.carouselItems.forEach((item) => {
+        //   item.content = `<iframe src=${item.url}+output=embed </iframe>`;
+        //   console.log(item.content);
+        // });
+        console.log(this.carouselItems);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    moment(value) {
+      return moment(value);
+    },
   },
 };
 </script>
 
-<style></style>
+<style scoped>
+.carousel {
+  /* position: absolute;
+  width: 300px;
+  top: 50%; */
+}
+</style>
