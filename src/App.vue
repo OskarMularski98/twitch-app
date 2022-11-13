@@ -1,23 +1,5 @@
 <template>
   <v-app>
-    <v-navigation-drawer app clipped dark v-model="drawer">
-      <v-list>
-        <v-list-item-group v-model="name">
-          <v-list-item link :to="{ name: 'home' }">
-            <v-list-item-icon>
-              <v-icon>{{ "mdi-format-list-numbered" }}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Rank 100 Streamers</v-list-item-title>
-          </v-list-item>
-          <v-list-item link :to="{ name: 'games' }">
-            <v-list-item-icon>
-              <v-icon>{{ "mdi-format-list-numbered" }}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Rank 100 Games</v-list-item-title>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-navigation-drawer>
     <v-app-bar clipped-left dark color="purple darken-3" app>
       <v-app-bar-nav-icon
         class="hidden-lg-and-up"
