@@ -73,7 +73,7 @@
             >
               <v-carousel-item v-for="(item, i) in carouselItems" :key="i">
                 <iframe
-                  :src="`${item.embed_url}&parent=localhost`"
+                  :src="`${item.embed_url}&parent=twitch-app-om.herokuapp.com`"
                   allowfullscreen="true"
                   autoplay="false"
                   height="300"
