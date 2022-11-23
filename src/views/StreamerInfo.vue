@@ -195,12 +195,7 @@ export default {
             },
           }
         );
-        // console.log(response.data.data);
         this.carouselItems = response.data.data;
-        // this.carouselItems.forEach((item) => {
-        //   item.content = `<iframe src=${item.url}+output=embed </iframe>`;
-        //   console.log(item.content);
-        // });
         console.log(this.carouselItems);
       } catch (error) {
         console.log(error);
