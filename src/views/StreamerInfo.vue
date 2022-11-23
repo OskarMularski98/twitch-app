@@ -82,7 +82,7 @@
                       :src="`${item.embed_url}&parent=twitch-app-om.herokuapp.com`"
                       allowfullscreen="true"
                       autoplay="false"
-                      style="width: 100%;"
+                      style="width: 100%"
                       height="300"
                       frameborder="0"
                     ></iframe>
@@ -208,10 +208,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.carousel {
-  /* position: absolute;
-  width: 300px;
-  top: 50%; */
-}
-</style>
+<style></style>
