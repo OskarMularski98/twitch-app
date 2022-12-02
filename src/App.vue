@@ -34,12 +34,24 @@
         </div>
         <v-spacer></v-spacer>
       </v-toolbar>
-      <router-view></router-view>
+      <v-alert
+        v-if="$store.getters['moduleUI/getAlert'].isActive"
+        :icon="$store.getters['moduleUI/getAlert'].icon"
+        :type="$store.getters['moduleUI/getAlert'].type"
+        tile
+        :color="$store.getters['moduleUI/getAlert'].color"
+      >
+        {{ $store.getters["moduleUI/getAlert"].text }}
+      </v-alert>
+      <router-view
+        v-if="!$store.getters['moduleUI/getAlert'].isActive"
+      ></router-view>
     </v-main>
   </v-app>
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "App",
   data() {
@@ -56,6 +68,23 @@ export default {
         this.$router.push({ name: "home" });
       }
     },
+  },
+  mounted() {
+    axios.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (error) => {
+        this.$store.commit("moduleUI/setAlert", {
+          text: "Unknown error occurred.",
+          type: "error",
+          icon: "mdi-alert-circle",
+          color: "error darken-2",
+          isActive: true,
+        });
+        return Promise.reject(error);
+      }
+    );
   },
 };
 </script>

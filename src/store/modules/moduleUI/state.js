@@ -3,4 +3,11 @@ export default {
     currentRouteName: "",
     backRouteName: "",
   },
+  alert: {
+    isActive: false,
+    type: "",
+    text: "",
+    icon: "",
+    color: "",
+  },
 };
