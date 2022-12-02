@@ -12,6 +12,10 @@
           class="d-block"
         />
       </a>
+      <v-spacer></v-spacer>
+      <v-btn @click="signIn" text class="sign-in"
+        ><v-icon class="mr-2"> {{ "mdi-account" }} </v-icon> Sign In</v-btn
+      >
     </v-app-bar>
 
     <v-main class="purple darken-4 background">
@@ -58,14 +62,21 @@ export default {
     return {
       drawer: null,
       name: "",
-      buttonRoutes: ["about"],
+      buttonRoutes: ["about", "signIn"],
     };
   },
   async created() {},
   methods: {
     checkRoute() {
-      if (this.$route.name === "about") {
+      if (this.$route.name === "about" || this.$route.name === "signIn") {
         this.$router.push({ name: "home" });
+      }
+    },
+    signIn() {
+      if (this.$route.name !== "signIn") {
+        this.$router.push({ name: "signIn" });
+      } else {
+        return;
       }
     },
   },
@@ -89,6 +100,13 @@ export default {
 };
 </script>
 <style scoped>
+.sign-in {
+  transition: all 0.3s ease-in;
+  text-shadow: 0px 0px 3px;
+}
+.sign-in:hover {
+  text-shadow: 0px 0px 10px;
+}
 .background {
   background-image: url("./assets/twitch-background-logo.png");
   background-size: cover;
