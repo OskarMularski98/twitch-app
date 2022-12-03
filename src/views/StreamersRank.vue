@@ -131,6 +131,7 @@ export default {
     };
   },
   async created() {
+    console.log(this.$store.getters["moduleUser/getUser"]);
     this.isLoading = true;
     await this.loadStreams();
     await this.loadStreamer();

@@ -13,9 +13,15 @@
         />
       </a>
       <v-spacer></v-spacer>
-      <v-btn @click="signIn" text class="sign-in"
+      <v-btn v-if="getUser.isLoggedIn" text class="button">
+        {{ getUser.userName }}
+      </v-btn>
+      <v-btn v-if="!getUser.isLoggedIn" @click="signIn" text class="button"
         ><v-icon class="mr-2"> {{ "mdi-account" }} </v-icon> Sign In</v-btn
       >
+      <v-btn @click="singOut" v-else text class="button">
+        <v-icon class="mr-2"> {{ "mdi-account-arrow-left " }} </v-icon> Sign Out
+      </v-btn>
     </v-app-bar>
 
     <v-main class="purple darken-4 background">
@@ -66,6 +72,16 @@ export default {
     };
   },
   async created() {},
+  computed: {
+    getUser: {
+      get() {
+        return { ...this.$store.getters["moduleUser/getUser"] };
+      },
+      set(user) {
+        this.$store.commit("moduleUser/setUser", user);
+      },
+    },
+  },
   methods: {
     checkRoute() {
       if (this.$route.name === "about" || this.$route.name === "signIn") {
@@ -78,6 +94,16 @@ export default {
       } else {
         return;
       }
+    },
+    singOut() {
+      this.$store.commit("moduleUser/setUser", {
+        email: "",
+        userName: "",
+        isLoggedIn: false,
+        idToken: "",
+        tokenExpiration: "",
+        idUser: "",
+      });
     },
   },
   mounted() {
@@ -100,11 +126,11 @@ export default {
 };
 </script>
 <style scoped>
-.sign-in {
+.button {
   transition: all 0.3s ease-in;
   text-shadow: 0px 0px 3px;
 }
-.sign-in:hover {
+.button:hover {
   text-shadow: 0px 0px 10px;
 }
 .background {
