@@ -18,35 +18,55 @@
               <v-card-title class="justify-center">
                 Sign In <v-icon class="ml-2"> {{ "mdi-account-edit" }} </v-icon>
               </v-card-title>
-              <v-form @submit.prevent="signIn">
-                <v-text-field
-                  label="E-mail"
-                  v-model="user.email"
-                ></v-text-field>
-                <v-text-field
-                  label="Password"
-                  v-model="user.password"
-                  :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
-                  :type="value ? 'password' : 'text'"
-                  @click:append="value = !value"
-                ></v-text-field>
-                <a @click="registerUser" class="register"
-                  ><u
-                    >Don't have account yet? Click here and register now!</u
-                  ></a
+              <ValidationObserver ref="form" v-slot="{ handleSubmit }">
+                <v-form
+                  lazy-validation
+                  v-model="isValid"
+                  @submit.prevent="handleSubmit(signIn)"
                 >
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    block
-                    :loading="submitLoading"
-                    :disabled="submitLoading"
-                    type="submit"
-                    color="purple darken-2"
-                    >Confirm</v-btn
+                  <ValidationProvider
+                    name="E-mail"
+                    rules="required|email"
+                    v-slot="{ errors }"
                   >
-                </v-card-actions>
-              </v-form>
+                    <v-text-field
+                      :error-messages="errors"
+                      label="E-mail"
+                      v-model="user.email"
+                    ></v-text-field>
+                  </ValidationProvider>
+                  <ValidationProvider
+                    name="Password"
+                    rules="required|min:6"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      :error-messages="errors"
+                      label="Password"
+                      v-model="user.password"
+                      :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
+                      :type="value ? 'password' : 'text'"
+                      @click:append="value = !value"
+                    ></v-text-field>
+                  </ValidationProvider>
+                  <a @click="registerUser" class="register"
+                    ><u
+                      >Don't have account yet? Click here and register now!</u
+                    ></a
+                  >
+                  <v-card-actions class="mt-5">
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      block
+                      :loading="submitLoading"
+                      :disabled="submitLoading"
+                      type="submit"
+                      color="purple darken-2"
+                      >Confirm</v-btn
+                    >
+                  </v-card-actions>
+                </v-form>
+              </ValidationObserver>
             </v-card>
           </v-col>
         </v-row>
@@ -56,10 +76,16 @@
 </template>
 
 <script>
+import { ValidationProvider, ValidationObserver } from "vee-validate";
 import axios from "axios";
 export default {
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+  },
   data() {
     return {
+      isValid: true,
       isLoading: false,
       submitLoading: false,
       value: String,
@@ -96,6 +122,9 @@ export default {
         console.log(response.data);
       } catch (error) {
         console.log(error);
+      }
+      if (this.$store.getters["moduleUser/getUserId"] === "") {
+        return;
       }
       try {
         const response = await axios.get(

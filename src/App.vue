@@ -100,10 +100,8 @@ export default {
         email: "",
         userName: "",
         isLoggedIn: false,
-        idToken: "",
-        tokenExpiration: "",
-        idUser: "",
       });
+      this.$store.commit("moduleUser/setUserId", "");
     },
   },
   mounted() {

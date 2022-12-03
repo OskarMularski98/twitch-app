@@ -19,41 +19,82 @@
                 Registration
                 <v-icon class="ml-2"> {{ "mdi-account-edit" }} </v-icon>
               </v-card-title>
-              <v-form lazy-validation @submit.prevent="registerUser">
-                <v-text-field
-                  label="Username"
-                  v-model="user.userName"
-                ></v-text-field>
-                <v-text-field
-                  label="E-mail"
-                  v-model="user.email"
-                ></v-text-field>
-                <v-text-field
-                  label="Password"
-                  v-model="user.password"
-                  :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
-                  :type="value ? 'password' : 'text'"
-                  @click:append="value = !value"
-                ></v-text-field>
-                <v-text-field
-                  label="Confirm"
-                  v-model="user.confirmedPassword"
-                  :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
-                  :type="value ? 'password' : 'text'"
-                  @click:append="value = !value"
-                ></v-text-field>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    block
-                    :loading="submitLoading"
-                    :disabled="submitLoading"
-                    type="submit"
-                    color="purple darken-2"
-                    >Confirm</v-btn
+              <ValidationObserver ref="form" v-slot="{ handleSubmit }">
+                <v-form
+                  lazy-validation
+                  @submit.prevent="handleSubmit(registerUser)"
+                  v-model="isValid"
+                >
+                  <ValidationProvider
+                    name="Username"
+                    mode="lazy"
+                    v-slot="{ errors }"
+                    rules="required|min:3"
                   >
-                </v-card-actions>
-              </v-form>
+                    <v-text-field
+                      label="Username"
+                      v-model="user.userName"
+                      hint="Minimun 3 characters"
+                      :error-messages="errors"
+                    ></v-text-field>
+                  </ValidationProvider>
+                  <ValidationProvider
+                    name="E-mail"
+                    mode="lazy"
+                    rules="required|email"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      :error-messages="errors"
+                      label="E-mail"
+                      v-model="user.email"
+                    ></v-text-field>
+                  </ValidationProvider>
+                  <ValidationProvider
+                    name="Password"
+                    mode="lazy"
+                    v-slot="{ errors }"
+                    rules="required|confirmed:confirmPassword"
+                  >
+                    <v-text-field
+                      label="Password"
+                      :error-messages="errors"
+                      hint="Minimum 6 characters"
+                      v-model="user.password"
+                      :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
+                      :type="value ? 'password' : 'text'"
+                      @click:append="value = !value"
+                    ></v-text-field>
+                  </ValidationProvider>
+                  <ValidationProvider
+                    mode="lazy"
+                    name="Confirm Password"
+                    vid="confirmPassword"
+                    rules="required"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      :error-messages="errors"
+                      label="Confirm"
+                      v-model="user.confirmedPassword"
+                      :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
+                      :type="value ? 'password' : 'text'"
+                      @click:append="value = !value"
+                    ></v-text-field>
+                  </ValidationProvider>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      block
+                      :loading="submitLoading"
+                      :disabled="submitLoading || !isValid"
+                      type="submit"
+                      color="purple darken-2"
+                      >Confirm</v-btn
+                    >
+                  </v-card-actions>
+                </v-form>
+              </ValidationObserver>
             </v-card>
           </v-col>
         </v-row>
@@ -65,11 +106,17 @@
 <script>
 // import { db } from "@/config/firebase";
 // import { query, collection, onSnapshot } from "firebase/firestore";
+import { ValidationProvider, ValidationObserver } from "vee-validate";
 import axios from "axios";
 export default {
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+  },
   data() {
     return {
       value: String,
+      isValid: true,
       isLoading: false,
       submitLoading: false,
       user: {
