@@ -79,7 +79,7 @@
                 >
                   <v-carousel-item v-for="(item, i) in carouselItems" :key="i">
                     <iframe
-                      :src="`${item.embed_url}&parent=twitch-app-om.herokuapp.com`"
+                      :src="`${item.embed_url}&parent=twitch-app-e5d55.firebaseapp.com`"
                       allowfullscreen="true"
                       autoplay="false"
                       style="width: 100%"
@@ -190,8 +190,8 @@ export default {
           `https://api.twitch.tv/helix/clips?broadcaster_id=${this.id}`,
           {
             headers: {
-              Authorization: "Bearer n8y2uezpvxa0uavp73bye42mk7c43k",
-              "Client-Id": "cauml8m858lhojpgwkhkk3a4ohx071",
+              Authorization: "Bearer qhpkw5p6k8714ll0m0t0n0b5hcw77h",
+              "Client-Id": "ebk9bsle4j0t0ch4qj97mjcy3u0soe",
             },
           }
         );
