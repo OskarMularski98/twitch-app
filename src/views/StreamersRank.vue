@@ -30,6 +30,7 @@
                       v-model="search"
                       append-icon="mdi-magnify"
                     ></v-text-field>
+                    <v-btn @click="refreshStreams">Refresh</v-btn>
                   </v-col>
                 </template>
                 <template #[`item.number`]="{ item }">
@@ -73,6 +74,7 @@
                     ><v-icon>{{ "mdi-account-details" }}</v-icon></v-btn
                   >
                 </template>
+                
               </v-data-table>
             </v-col>
           </v-row>
@@ -136,7 +138,7 @@ export default {
     await this.loadStreams();
     await this.loadStreamer();
     this.isLoading = false;
-    this.refreshStreams();
+    // this.refreshStreams();
   },
   methods: {
     async loadStreams() {
@@ -188,12 +190,14 @@ export default {
         console.log("error", error);
       }
     },
-    refreshStreams() {
-      const timeOut = 5000;
-      this.isCleared = setInterval(async () => {
-        await this.loadStreams();
-        await this.loadStreamer();
-      }, timeOut);
+    async refreshStreams() {
+      // const timeOut = 5000;
+      // this.isCleared = setInterval(async () => {
+      //   await this.loadStreams();
+      //   await this.loadStreamer();
+      // }, timeOut);
+      await this.loadStreams()
+      await this.loadStreamer()
     },
     getColor(viewers) {
       if (viewers > 50000) return "green";

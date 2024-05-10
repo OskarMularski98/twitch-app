@@ -13,12 +13,13 @@
     <v-fade-transition hide-on-leave>
       <v-container v-if="!isLoading" class="fill-height justify-center">
         <v-row class="justify-center">
-          <v-col cols="12" xl="3" lg="5" md="7" sm="7">
+          <v-col cols="12" xl="4" lg="6" md="7" sm="7">
             <v-data-table
               hide-default-footer
               :headers="headers"
               :items="items"
               dark
+              style="height: 100%"
             >
               <template #top>
                 <v-toolbar>
@@ -30,8 +31,8 @@
                   lazy-src="../assets/twitch-logo-lazy-src.png"
                   aspect-ratio="1"
                   contain
-                  max-height="500"
-                  max-width="500"
+                  max-height="600"
+                  max-width="600"
                   :src="thumbnail_url"
                 >
                   <template #placeholder>
@@ -64,30 +65,6 @@
                 </div>
               </template>
               <template #footer>
-                <v-toolbar class="">
-                  <v-spacer></v-spacer>
-                  <v-toolbar-title class="justify-center"
-                    >Most Popular Clips 🎬</v-toolbar-title
-                  >
-                  <v-spacer></v-spacer>
-                </v-toolbar>
-                <v-carousel
-                  hide-delimiters
-                  style="width: 500px"
-                  class="carousel"
-                  height="auto"
-                >
-                  <v-carousel-item v-for="(item, i) in carouselItems" :key="i">
-                    <iframe
-                      :src="`${item.embed_url}&parent=twitch-app-e5d55.firebaseapp.com`"
-                      allowfullscreen="true"
-                      autoplay="false"
-                      style="width: 100%"
-                      height="300"
-                      frameborder="0"
-                    ></iframe>
-                  </v-carousel-item>
-                </v-carousel>
                 <v-btn
                   block
                   tile
@@ -99,6 +76,36 @@
                 </v-btn>
               </template>
             </v-data-table>
+          </v-col>
+          <v-col cols="12" xl="5" lg="6" md="7" sm="7">
+            <v-toolbar dark>
+              <v-spacer></v-spacer>
+              <v-toolbar-title class="justify-center"
+                >Most Popular Clips 🎬</v-toolbar-title
+              >
+              <v-spacer></v-spacer>
+            </v-toolbar>
+            <v-carousel
+              hide-delimiters
+              style="width: 100%"
+              class="carousel"
+              height="auto"
+            >
+              <v-carousel-item
+                v-for="(item, i) in carouselItems"
+                :key="i"
+                style="height: 100%"
+                class="carousel-item"
+              >
+                <iframe
+                  :src="`${item.embed_url}&parent=twitch-app-e5d55.web.app`"
+                  allowfullscreen="true"
+                  autoplay="false"
+                  style="height: 550px; width: 100%"
+                  frameborder="0"
+                ></iframe>
+              </v-carousel-item>
+            </v-carousel>
           </v-col>
         </v-row>
       </v-container>

@@ -1,5 +1,22 @@
 <template>
   <v-app>
+    <v-navigation-drawer clipped v-model="drawer" app dark>
+      <v-list>
+        <v-list-item-group mandatory v-model="name">
+          <v-list-item
+            v-for="(list, index) in lists"
+            :key="index"
+            link
+            @click="changeList(list)"
+          >
+            <v-list-item-icon>
+              <v-icon>{{ list.icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ list.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-navigation-drawer>
     <v-app-bar clipped-left dark color="purple darken-3" app>
       <v-app-bar-nav-icon
         class="hidden-lg-and-up"
@@ -62,13 +79,23 @@
 
 <script>
 import axios from "axios";
+import { mdiController, mdiPodium } from "@mdi/js";
 export default {
   name: "App",
   data() {
     return {
       drawer: null,
       name: "",
+      selectedItem: 1,
       buttonRoutes: ["about", "signIn"],
+      icons: {
+        mdiController,
+        mdiPodium,
+      },
+      lists: [
+        { title: "Top 100 Streams", icon: mdiPodium, path: "home" },
+        { title: "Top 100 Games", icon: mdiController, path: "games" },
+      ],
     };
   },
   async created() {},
@@ -102,6 +129,9 @@ export default {
         isLoggedIn: false,
       });
       this.$store.commit("moduleUser/setUserId", "");
+    },
+    changeList(list) {
+      this.$router.push({ name: list.path });
     },
   },
   mounted() {
