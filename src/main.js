@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import LangFlag from "vue-lang-code-flags";
+import "@/config/validation";
 
 Vue.component("lang-flag", LangFlag);
 Vue.config.productionTip = false;

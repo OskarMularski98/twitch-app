@@ -1,19 +1,18 @@
 <template>
   <v-app>
-    <v-navigation-drawer app clipped dark v-model="drawer">
+    <v-navigation-drawer clipped v-model="drawer" app dark>
       <v-list>
-        <v-list-item-group v-model="name">
-          <v-list-item link :to="{ name: 'home' }">
+        <v-list-item-group mandatory v-model="name">
+          <v-list-item
+            v-for="(list, index) in lists"
+            :key="index"
+            link
+            @click="changeList(list)"
+          >
             <v-list-item-icon>
-              <v-icon>{{ "mdi-format-list-numbered" }}</v-icon>
+              <v-icon>{{ list.icon }}</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>Rank 100 Streamers</v-list-item-title>
-          </v-list-item>
-          <v-list-item link :to="{ name: 'games' }">
-            <v-list-item-icon>
-              <v-icon>{{ "mdi-format-list-numbered" }}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Rank 100 Games</v-list-item-title>
+            <v-list-item-title>{{ list.title }}</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -30,12 +29,28 @@
           class="d-block"
         />
       </a>
+      <v-spacer></v-spacer>
+      <v-btn v-if="getUser.isLoggedIn" text class="button">
+        {{ getUser.userName }}
+      </v-btn>
+      <v-btn v-if="!getUser.isLoggedIn" @click="signIn" text class="button"
+        ><v-icon class="mr-2"> {{ "mdi-account" }} </v-icon> Sign In</v-btn
+      >
+      <v-btn @click="singOut" v-else text class="button">
+        <v-icon class="mr-2"> {{ "mdi-account-arrow-left " }} </v-icon> Sign Out
+      </v-btn>
     </v-app-bar>
 
     <v-main class="purple darken-4 background">
       <v-toolbar dark color="purple darken-2">
-        <v-btn v-if="$route.name === 'about'" fab text small :to="{name: 'home'}">
-          <v-icon> {{'mdi-arrow-left'}} </v-icon>
+        <v-btn
+          v-if="buttonRoutes.includes($route.name)"
+          @click="checkRoute"
+          fab
+          text
+          small
+        >
+          <v-icon> {{ "mdi-arrow-left" }} </v-icon>
         </v-btn>
         <v-spacer></v-spacer>
         <v-toolbar-title style="text-shadow: 0px 0px 3px"
@@ -46,25 +61,106 @@
         </div>
         <v-spacer></v-spacer>
       </v-toolbar>
-      <router-view></router-view>
+      <v-alert
+        v-if="$store.getters['moduleUI/getAlert'].isActive"
+        :icon="$store.getters['moduleUI/getAlert'].icon"
+        :type="$store.getters['moduleUI/getAlert'].type"
+        tile
+        :color="$store.getters['moduleUI/getAlert'].color"
+      >
+        {{ $store.getters["moduleUI/getAlert"].text }}
+      </v-alert>
+      <router-view
+        v-if="!$store.getters['moduleUI/getAlert'].isActive"
+      ></router-view>
     </v-main>
   </v-app>
 </template>
 
 <script>
+import axios from "axios";
+import { mdiController, mdiPodium } from "@mdi/js";
 export default {
   name: "App",
   data() {
     return {
       drawer: null,
       name: "",
+      selectedItem: 1,
+      buttonRoutes: ["about", "signIn"],
+      icons: {
+        mdiController,
+        mdiPodium,
+      },
+      lists: [
+        { title: "Top 100 Streams", icon: mdiPodium, path: "home" },
+        { title: "Top 100 Games", icon: mdiController, path: "games" },
+      ],
     };
   },
   async created() {},
-  methods: {},
+  computed: {
+    getUser: {
+      get() {
+        return { ...this.$store.getters["moduleUser/getUser"] };
+      },
+      set(user) {
+        this.$store.commit("moduleUser/setUser", user);
+      },
+    },
+  },
+  methods: {
+    checkRoute() {
+      if (this.$route.name === "about" || this.$route.name === "signIn") {
+        this.$router.push({ name: "home" });
+      }
+    },
+    signIn() {
+      if (this.$route.name !== "signIn") {
+        this.$router.push({ name: "signIn" });
+      } else {
+        return;
+      }
+    },
+    singOut() {
+      this.$store.commit("moduleUser/setUser", {
+        email: "",
+        userName: "",
+        isLoggedIn: false,
+      });
+      this.$store.commit("moduleUser/setUserId", "");
+    },
+    changeList(list) {
+      this.$router.push({ name: list.path });
+    },
+  },
+  mounted() {
+    axios.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (error) => {
+        this.$store.commit("moduleUI/setAlert", {
+          text: "Unknown error occurred.",
+          type: "error",
+          icon: "mdi-alert-circle",
+          color: "error darken-2",
+          isActive: true,
+        });
+        return Promise.reject(error);
+      }
+    );
+  },
 };
 </script>
 <style scoped>
+.button {
+  transition: all 0.3s ease-in;
+  text-shadow: 0px 0px 3px;
+}
+.button:hover {
+  text-shadow: 0px 0px 10px;
+}
 .background {
   background-image: url("./assets/twitch-background-logo.png");
   background-size: cover;
