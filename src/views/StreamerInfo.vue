@@ -70,9 +70,14 @@
 </template>
 
 <script>
+import useTokenManage from "@/composables/useTokenManage";
 import axios from "axios";
 export default {
   props: ["id"],
+  setup() {
+    const { getToken } = useTokenManage();
+    return { getToken };
+  },
   data() {
     return {
       isLoading: false,
@@ -92,10 +97,12 @@ export default {
         },
       ],
       items: [],
+      token: null,
     };
   },
   async created() {
     this.isLoading = true;
+    this.token = await this.getToken();
     await this.loadStreamer();
     this.isLoading = false;
   },
@@ -106,10 +113,10 @@ export default {
           `https://api.twitch.tv/helix/streams?user_id=${this.id}`,
           {
             headers: {
-              Authorization: "Bearer n8y2uezpvxa0uavp73bye42mk7c43k",
-              "Client-Id": "cauml8m858lhojpgwkhkk3a4ohx071",
+              Authorization: `Bearer ${this.token}`,
+              "Client-Id": process.env.VUE_APP_CLIENT_ID,
             },
-          }
+          },
         );
         this.streamerInfo = response.data.data[0];
         this.items = [
@@ -138,7 +145,6 @@ export default {
           .replace("{width}", "200")
           .replace("{height}", "200");
         this.link = `https://www.twitch.tv/${this.streamerInfo.user_login}`;
-        console.log(this.streamerInfo);
       } catch (error) {
         console.log(error);
       }

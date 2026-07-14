@@ -84,7 +84,12 @@
 
 <script>
 import axios from "axios";
+import useTokenManage from "@/composables/useTokenManage";
 export default {
+  setup() {
+    const { getToken } = useTokenManage();
+    return { getToken };
+  },
   data() {
     return {
       search: "",
@@ -128,10 +133,13 @@ export default {
         },
       ],
       streamersId: [],
+      token: null,
     };
   },
+
   async created() {
     this.isLoading = true;
+    this.token = await this.getToken();
     await this.loadStreams();
     await this.loadStreamer();
     this.isLoading = false;
@@ -145,10 +153,10 @@ export default {
           "https://api.twitch.tv/helix/streams?first=100",
           {
             headers: {
-              Authorization: "Bearer n8y2uezpvxa0uavp73bye42mk7c43k",
-              "Client-Id": "cauml8m858lhojpgwkhkk3a4ohx071",
+              Authorization: `Bearer ${this.token}`,
+              "Client-Id": process.env.VUE_APP_CLIENT_ID,
             },
-          }
+          },
         );
         this.streams = response.data.data;
         this.streams.forEach((stream) => {
@@ -166,10 +174,10 @@ export default {
             .join("&")}`,
           {
             headers: {
-              Authorization: "Bearer n8y2uezpvxa0uavp73bye42mk7c43k",
-              "Client-Id": "cauml8m858lhojpgwkhkk3a4ohx071",
+              Authorization: `Bearer ${this.token}`,
+              "Client-Id": process.env.VUE_APP_CLIENT_ID,
             },
-          }
+          },
         );
         this.streamsDetails = response.data.data;
         this.streams.forEach((stream) => {
